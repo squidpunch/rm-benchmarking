@@ -1,62 +1,49 @@
 class AppDelegate
+  VALUE = [1,2,3]
+
+  def value
+    [1,2,3]
+  end
+
   def application(application, didFinishLaunchingWithOptions:launchOptions)
 
     if ENV['mode'] == "release"
+
       puts "*" * 100
-      puts " Testing Loop Speeds in RubyMotion"
-      puts "    Benchmark 1 uses `for i in 1..n`"
-      puts "    Benchmark 2 uses `n.times`"
-      puts "    Benchmark 3 uses `1.upto(n)`"
+      puts " Testing variables versus constants versus methods"
+      puts "    Benchmark 1 uses @value"
+      puts "    Benchmark 2 uses def value; end"
+      puts "    Benchmark 3 uses VALUE"
+      puts "    Benchmark 4 uses @value (990000 times)"
+      puts "    Benchmark 5 uses def value; end (990000 times)"
+      puts "    Benchmark 6 uses VALUE (990000 times)"
       puts "*" * 100
       puts ""
 
-
-      n = 500
-      puts "Testing with n = #{n}"
+      @value = [1,2,3]
       Benchmark.bm do |x|
-        x.report { for i in 1..n; a = "1"; end }
-        x.report { n.times do   ; a = "1"; end }
-        x.report { 1.upto(n) do ; a = "1"; end }
+        x.report { @value }
       end
-      puts "-" * 100
 
-      n = 5000
-      puts "Testing with n = #{n}"
       Benchmark.bm do |x|
-        x.report { for i in 1..n; a = "1"; end }
-        x.report { n.times do   ; a = "1"; end }
-        x.report { 1.upto(n) do ; a = "1"; end }
+        x.report { self.value }
       end
-      puts "-" * 100
 
-      n = 50000
-      puts "Testing with n = #{n}"
       Benchmark.bm do |x|
-        x.report { for i in 1..n; a = "1"; end }
-        x.report { n.times do   ; a = "1"; end }
-        x.report { 1.upto(n) do ; a = "1"; end }
+        x.report {  VALUE }
       end
-      puts "-" * 100
 
-      n = 500000
-      puts "Testing with n = #{n}"
       Benchmark.bm do |x|
-        x.report { for i in 1..n; a = "1"; end }
-        x.report { n.times do   ; a = "1"; end }
-        x.report { 1.upto(n) do ; a = "1"; end }
+        x.report { 990000.times { @value } }
       end
-      puts "-" * 100
 
-      n = 5000000
-      puts "Testing with n = #{n}"
       Benchmark.bm do |x|
-        x.report { for i in 1..n; a = "1"; end }
-        x.report { n.times do   ; a = "1"; end }
-        x.report { 1.upto(n) do ; a = "1"; end }
+        x.report { 990000.times { self.value } }
       end
-      puts "-" * 100
 
-
+      Benchmark.bm do |x|
+        x.report { 990000.times { VALUE } }
+      end
     else
       puts "You must run with mode=release"
       puts "i.e. `bundle exec rake mode=release`"
